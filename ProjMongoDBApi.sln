@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjMongoDBApi", "ProjMongoDBApi\ProjMongoDBApi.csproj", "{9B491A60-D454-415F-AC85-8E47F5D7B2C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{167D7A42-5315-4538-941C-531EF5F47F78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "ClassLibrary1\Models.csproj", "{167D7A42-5315-4538-941C-531EF5F47F78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
