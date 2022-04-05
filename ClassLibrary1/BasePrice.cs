@@ -8,7 +8,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Models
 {
-    internal class BasePrice
+    public class BasePrice
     {
         #region Properties
         [BsonId]

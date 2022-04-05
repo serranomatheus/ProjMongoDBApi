@@ -14,28 +14,28 @@ namespace ProjMongoDBApi.Services
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
-            _aircrafts = database.GetCollection<Passenger>(settings.PassengerCollectionName);
+            _aircrafts = database.GetCollection<Aircraft>(settings.AircraftCollectionName);
         }
 
-        public List<Passenger> Get() =>
+        public List<Aircraft> Get() =>
             _aircrafts.Find(passenger => true).ToList();
 
-        public Passenger Get(string id) =>
-            _aircrafts.Find<Passenger>(passenger => passenger.Id == id).FirstOrDefault();
+        public Aircraft Get(string id) =>
+            _aircrafts.Find<Aircraft>(aircraft => aircraft.Id == id).FirstOrDefault();
 
-        public Passenger Create(Passenger passenger)
+        public Aircraft Create(Aircraft aircraft)
         {
-            _aircrafts.InsertOne(passenger);
-            return passenger;
+            _aircrafts.InsertOne(aircraft);
+            return aircraft;
         }
 
-        public void Update(string id, Passenger passengerIn) =>
-            _aircrafts.ReplaceOne(passenger => passenger.Id == id, passengerIn);
+        public void Update(string id, Aircraft aircraftIn) =>
+            _aircrafts.ReplaceOne(aircraft => aircraft.Id == id, aircraftIn);
 
-        public void Remove(Passenger passengerIn) =>
-            _aircrafts.DeleteOne(passenger => passenger.Id == passengerIn.Id);
+        public void Remove(Aircraft aircraftIn) =>
+            _aircrafts.DeleteOne(aircraft => aircraft.Id == aircraftIn.Id);
 
         public void Remove(string id) =>
-            _aircrafts.DeleteOne(passenger => passenger.Id == id);
+            _aircrafts.DeleteOne(aircraft => aircraft.Id == id);
     }
 }

@@ -15,7 +15,7 @@ using Microsoft.OpenApi.Models;
 using ProjMongoDBApi.Services;
 using ProjMongoDBApi.Utils;
 
-namespace ProjMongoDBAircraft
+namespace ProjMongoDBAirport
 {
     public class Startup
     {
@@ -43,7 +43,7 @@ namespace ProjMongoDBAircraft
             services.AddSingleton<IProjMongoDBApiSettings>(sp =>
                 sp.GetRequiredService<IOptions<ProjMongoDBApiSettings>>().Value);
 
-            services.AddSingleton<AircraftService>();
+            services.AddSingleton<AirportService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +53,7 @@ namespace ProjMongoDBAircraft
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProjMongoDBAircraft v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProjMongoDBAirport v1"));
             }
 
             app.UseHttpsRedirection();
