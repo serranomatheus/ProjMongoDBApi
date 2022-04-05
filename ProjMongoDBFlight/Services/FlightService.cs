@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Models;
 using MongoDB.Driver;
 using ProjMongoDBApi.Utils;
@@ -16,7 +17,8 @@ namespace ProjMongoDBApi.Services
             var database = client.GetDatabase(settings.DatabaseName);
             _flights = database.GetCollection<Flight>(settings.FlightCollectionName);
         }
-
+        public Flight GetFlight(string origin,string destination,DateTime arrivalTime) =>
+           _flights.Find<Flight>(flight => flight.Origin.CodeIata == origin && flight.Destination.CodeIata == destination && flight.ArrivalTime == arrivalTime).FirstOrDefault();
         public List<Flight> Get() =>
             _flights.Find(flight => true).ToList();
 

@@ -20,10 +20,21 @@ namespace ProjMongoDBFlight.Controllers
             _flightService = flightService;
         }
 
-        [HttpGet]
+        [HttpGet]        
         public ActionResult<List<Flight>> Get() =>
             _flightService.Get();
 
+        [HttpGet("Search")]
+        public ActionResult<Flight> GetCodeIataAiport(string origin, string destination,DateTime arrivalTime)
+        {
+            var flight = _flightService.GetFlight(origin,destination,arrivalTime);
+            if (flight == null)
+            {
+                return NotFound();
+            }
+            return
+                flight;
+        }
 
         [HttpGet("{id:length(24)}", Name = "GetFlight")]
         public ActionResult<Flight> Get(string id)
