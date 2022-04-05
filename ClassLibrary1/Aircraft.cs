@@ -8,7 +8,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Models
 {
-    internal class Aircraft
+    public class Aircraft
     {
         #region Properties
         [BsonId]
