@@ -14,7 +14,7 @@ namespace ProjMongoDBApi.Services
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
-            _passengers = database.GetCollection<Passenger>(settings.ClientCollectionName);
+            _passengers = database.GetCollection<Passenger>(settings.PassengerCollectionName);
         }
 
         public List<Passenger> Get() =>
