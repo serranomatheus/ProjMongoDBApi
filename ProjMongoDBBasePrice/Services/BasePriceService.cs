@@ -16,7 +16,8 @@ namespace ProjMongoDBApi.Services
             var database = client.GetDatabase(settings.DatabaseName);
             _basePrice = database.GetCollection<BasePrice>(settings.BasePriceCollectionName);
         }
-
+        public BasePrice GetBasePrice(string origin, string destination) =>
+           _basePrice.Find<BasePrice>(basePrice => basePrice.Origin.CodeIata == origin && basePrice.Destination.CodeIata == destination).FirstOrDefault();
         public List<BasePrice> Get() =>
             _basePrice.Find(basePrice => true).ToList();
 

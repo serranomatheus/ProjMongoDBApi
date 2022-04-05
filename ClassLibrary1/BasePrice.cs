@@ -14,6 +14,7 @@ namespace Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+
         public Airport Origin { get; set; }
         public Airport Destination { get; set; }
         public double Value { get; set; }

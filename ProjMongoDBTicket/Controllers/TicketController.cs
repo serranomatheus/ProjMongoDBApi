@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Newtonsoft.Json;
 using ProjMongoDBApi.Services;
 
 namespace ProjMongoDBTicket.Controllers
@@ -35,8 +39,49 @@ namespace ProjMongoDBTicket.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Ticket> Create(Ticket ticket)
+        public async Task<ActionResult<Ticket>> Create(Ticket ticket)
         {
+            try
+            {
+                HttpClient ApiConnection = new HttpClient();
+                HttpResponseMessage passenger = await ApiConnection.GetAsync("https://localhost:44300/api/Passenger/Search?cpf=" + ticket.Passenger.Cpf);
+
+                string responseBody = await passenger.Content.ReadAsStringAsync();
+                var passengerCpf = JsonConvert.DeserializeObject<Passenger>(responseBody);
+                if (passengerCpf.Cpf == null)
+                    return NotFound("Passenger  not found");
+                ticket.Passenger = passengerCpf;
+
+                
+
+                HttpResponseMessage basePrice = await ApiConnection.GetAsync("https://localhost:44359/api/BasePrice/Search?origin=" + ticket.Flight.Origin.CodeIata +"&destination=" + ticket.Flight.Destination.CodeIata);
+
+                responseBody = await basePrice.Content.ReadAsStringAsync();
+                var basePriceObject = JsonConvert.DeserializeObject<BasePrice>(responseBody);
+                if (basePriceObject.Destination.CodeIata == null || basePriceObject.Origin.CodeIata == null)
+                    return NotFound("BasePrice not found");
+                ticket.BasePrice = basePriceObject;
+
+                ticket.Amount = (ticket.BasePrice.Value + ticket.FlightClass.Value) - (((ticket.BasePrice.Value + ticket.FlightClass.Value)*ticket.Promotion)/100);
+               
+                
+                HttpResponseMessage flight = await ApiConnection.GetAsync("https://localhost:44314/api/Flights/Search?origin="+ ticket.Flight.Origin.CodeIata + "&destination="+ticket.Flight.Destination.CodeIata);
+                responseBody = await flight.Content.ReadAsStringAsync();
+                var flightObject = JsonConvert.DeserializeObject<Flight>(responseBody);
+                if (flightObject.Destination.CodeIata == null || flightObject.Origin.CodeIata == null)
+                    return NotFound("Flight not found");
+                ticket.Flight = flightObject;
+
+
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                throw;
+            }
+
+
             _ticketService.Create(ticket);
 
             return CreatedAtRoute("GetTicket", new { id = ticket.Id.ToString() }, ticket);

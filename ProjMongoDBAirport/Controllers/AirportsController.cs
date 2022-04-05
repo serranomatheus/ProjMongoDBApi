@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -46,8 +47,11 @@ namespace ProjMongoDBAirport.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Airport> Create(Airport airport)
+        public async Task<ActionResult<Airport>> Create(Airport airport)
         {
+            var addressApi = await Models.GetAddressApiPostalCodecs.GetAddress(airport.Address.PostalCode);
+            airport.Address = new Address(addressApi.Street, addressApi.City, addressApi.FederativeUnit, addressApi.District, airport.Address.Number, airport.Address.Complement,addressApi.PostalCode) ;
+
             _airportService.Create(airport);
 
             return CreatedAtRoute("GetAirport", new { id = airport.Id.ToString() }, airport);

@@ -19,6 +19,7 @@ namespace Models
         public double Amount { get; set; }
         public FlightClass FlightClass { get; set; }
         public double Promotion { get; set; }
+        public BasePrice BasePrice { get; set; }
         #endregion
     }
 }

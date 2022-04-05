@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Newtonsoft.Json;
 using ProjMongoDBApi.Services;
 
 namespace ProjMongoDBBasePrice.Controllers
@@ -19,7 +23,17 @@ namespace ProjMongoDBBasePrice.Controllers
         [HttpGet]
         public ActionResult<List<BasePrice>> Get() =>
             _basePriceService.Get();
-
+        [HttpGet("Search")]
+        public ActionResult<BasePrice> GetBasePrice(string origin, string destination)
+        {
+            var basePrice = _basePriceService.GetBasePrice(origin, destination);
+            if (basePrice == null)
+            {
+                return NotFound();
+            }
+            return
+                basePrice;
+        }
 
         [HttpGet("{id:length(24)}", Name = "GetBasePrice")]
         public ActionResult<BasePrice> Get(string id)
@@ -35,8 +49,37 @@ namespace ProjMongoDBBasePrice.Controllers
         }
 
         [HttpPost]
-        public ActionResult<BasePrice> Create(BasePrice basePrice)
+        public async Task<ActionResult<BasePrice>> Create(BasePrice basePrice)
         {
+            try
+            {
+                HttpClient ApiConnection = new HttpClient();
+                HttpResponseMessage airport = await ApiConnection.GetAsync("https://localhost:44340/api/Airports/GetCodeIata?codeIata=" + basePrice.Origin.CodeIata);
+
+                string responseBody = await airport.Content.ReadAsStringAsync();
+                var airportOrigin = JsonConvert.DeserializeObject<Airport>(responseBody);
+                if (airportOrigin.CodeIata == null)
+                    return NotFound("Airport origin not found");
+                basePrice.Origin = airportOrigin;
+
+                airport = await ApiConnection.GetAsync("https://localhost:44340/api/Airports/GetCodeIata?codeIata=" + basePrice.Destination.CodeIata);
+
+                responseBody = await airport.Content.ReadAsStringAsync();
+                var airportDestination = JsonConvert.DeserializeObject<Airport>(responseBody);
+                if (airportDestination.CodeIata == null)
+                    return NotFound("Airport destination not found");
+                basePrice.Destination = airportDestination;
+
+                
+
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                throw;
+            }
+
             _basePriceService.Create(basePrice);
 
             return CreatedAtRoute("GetBasePrice", new { id = basePrice.Id.ToString() }, basePrice);

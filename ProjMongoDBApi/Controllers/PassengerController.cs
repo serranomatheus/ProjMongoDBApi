@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -48,8 +49,12 @@ namespace ProjMongoDBApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Passenger> Create(Passenger passenger)
+        public async Task<ActionResult<Passenger>> Create(Passenger passenger)
         {
+
+            var addressApi = await Models.GetAddressApiPostalCodecs.GetAddress(passenger.Address.PostalCode);
+            passenger.Address = new Address(addressApi.Street, addressApi.City, addressApi.FederativeUnit, addressApi.District, passenger.Address.Number,passenger.Address.Complement,addressApi.PostalCode) ;
+
 
 
             if (!CpfService.CheckCpfDB(passenger.Cpf, _passengerService))

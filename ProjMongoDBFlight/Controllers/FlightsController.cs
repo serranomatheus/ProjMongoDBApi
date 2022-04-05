@@ -25,9 +25,9 @@ namespace ProjMongoDBFlight.Controllers
             _flightService.Get();
 
         [HttpGet("Search")]
-        public ActionResult<Flight> GetCodeIataAiport(string origin, string destination,DateTime arrivalTime)
+        public ActionResult<Flight> GetFlight(string origin, string destination)
         {
-            var flight = _flightService.GetFlight(origin,destination,arrivalTime);
+            var flight = _flightService.GetFlight(origin,destination);
             if (flight == null)
             {
                 return NotFound();
@@ -71,7 +71,7 @@ namespace ProjMongoDBFlight.Controllers
                     return NotFound("Airport destination not found");
                 flight.Destination = airportDestination;
 
-                HttpResponseMessage aircraft = await ApiConnection.GetAsync("https://localhost:44340/api/Airports/GetCodeIata?codeIata=" + flight.Aircraft);
+                HttpResponseMessage aircraft = await ApiConnection.GetAsync("https://localhost:44387/api/Aircraft/Search?code=" + flight.Aircraft);
                
                 string responseBody1 = await aircraft.Content.ReadAsStringAsync();
                 var aircraftCode = JsonConvert.DeserializeObject<Aircraft>(responseBody1);
