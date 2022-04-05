@@ -17,12 +17,12 @@ namespace ProjMongoDBFlight.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Airport>> Get() =>
+        public ActionResult<List<Flight>> Get() =>
             _flightService.Get();
 
 
         [HttpGet("{id:length(24)}", Name = "GetFlight")]
-        public ActionResult<Airport> Get(string id)
+        public ActionResult<Flight> Get(string id)
         {
             var flight = _flightService.Get(id);
 
@@ -35,7 +35,7 @@ namespace ProjMongoDBFlight.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Airport> Create(Airport flight)
+        public ActionResult<Flight> Create(Flight flight)
         {
             _flightService.Create(flight);
 
@@ -43,7 +43,7 @@ namespace ProjMongoDBFlight.Controllers
         }
 
         [HttpPut("{id:length(24)}")]
-        public IActionResult Update(string id, Airport flightIn)
+        public IActionResult Update(string id, Flight flightIn)
         {
             var flight = _flightService.Get(id);
 
