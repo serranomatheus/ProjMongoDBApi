@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models;
 
 using ProjMongoDBApi.Services;
+using ProjMongoDBPassenger.Services;
 
 namespace ProjMongoDBApi.Controllers
 {
@@ -20,7 +21,18 @@ namespace ProjMongoDBApi.Controllers
         [HttpGet]
         public ActionResult<List<Passenger>> Get() =>
             _passengerService.Get();
-
+        
+        [HttpGet("Search")]
+        public ActionResult<Passenger> GetPassengerCpf(string cpf)
+        {
+            var passenger = _passengerService.GetCpf(cpf);
+            if(passenger == null)
+            {
+                return NotFound();
+            }
+            return
+                passenger;
+        }
 
         [HttpGet("{id:length(24)}", Name = "GetPassenger")]
         public ActionResult<Passenger> Get(string id)
@@ -38,6 +50,10 @@ namespace ProjMongoDBApi.Controllers
         [HttpPost]
         public ActionResult<Passenger> Create(Passenger passenger)
         {
+
+
+            if (!CpfService.CheckCpfDB(passenger.Cpf, _passengerService))
+                return null;
             _passengerService.Create(passenger);
 
             return CreatedAtRoute("GetPassenger", new { id = passenger.Id.ToString() }, passenger);

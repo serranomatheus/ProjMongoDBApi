@@ -19,7 +19,8 @@ namespace ProjMongoDBApi.Services
 
         public List<Airport> Get() =>
             _airports.Find(airport => true).ToList();
-
+        public Airport GetCodeIata(string codeIata) =>
+           _airports.Find<Airport>(airport => airport.CodeIata == codeIata).FirstOrDefault();
         public Airport Get(string id) =>
             _airports.Find<Airport>(airport => airport.Id == id).FirstOrDefault();
 

@@ -16,7 +16,8 @@ namespace ProjMongoDBApi.Services
             var database = client.GetDatabase(settings.DatabaseName);
             _aircrafts = database.GetCollection<Aircraft>(settings.AircraftCollectionName);
         }
-
+        public Aircraft GetAircraftCode(string code) =>
+           _aircrafts.Find<Aircraft>(aircraft => aircraft.Code == code).FirstOrDefault();
         public List<Aircraft> Get() =>
             _aircrafts.Find(passenger => true).ToList();
 

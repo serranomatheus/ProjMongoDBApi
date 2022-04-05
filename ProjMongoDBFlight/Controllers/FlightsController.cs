@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Newtonsoft.Json;
 using ProjMongoDBApi.Services;
 
 namespace ProjMongoDBFlight.Controllers
@@ -35,8 +39,44 @@ namespace ProjMongoDBFlight.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Flight> Create(Flight flight)
+        public async Task<ActionResult<Flight>> Create(Flight flight)
         {
+            try
+            {
+                HttpClient ApiConnection = new HttpClient();
+                HttpResponseMessage airport = await ApiConnection.GetAsync("https://localhost:44340/api/Airports/GetCodeIata?codeIata=" + flight.Origin.CodeIata);
+                
+                string responseBody = await airport.Content.ReadAsStringAsync();                
+                var airportOrigin = JsonConvert.DeserializeObject<Airport>(responseBody);
+                if (airportOrigin.CodeIata == null)
+                    return NotFound("Airport origin not found");
+                flight.Origin = airportOrigin;
+
+                airport = await ApiConnection.GetAsync("https://localhost:44340/api/Airports/GetCodeIata?codeIata=" + flight.Destination.CodeIata);
+                
+                responseBody = await airport.Content.ReadAsStringAsync();
+                var airportDestination = JsonConvert.DeserializeObject<Airport>(responseBody);
+                if (airportDestination.CodeIata == null)
+                    return NotFound("Airport destination not found");
+                flight.Destination = airportDestination;
+
+                HttpResponseMessage aircraft = await ApiConnection.GetAsync("https://localhost:44340/api/Airports/GetCodeIata?codeIata=" + flight.Aircraft);
+               
+                string responseBody1 = await aircraft.Content.ReadAsStringAsync();
+                var aircraftCode = JsonConvert.DeserializeObject<Aircraft>(responseBody1);
+                if (aircraftCode.Code == null)
+                    return NotFound("Aircraft nout found");
+                flight.Aircraft = aircraftCode;
+
+
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                throw;
+            }
+
             _flightService.Create(flight);
 
             return CreatedAtRoute("GetFlight", new { id = flight.Id.ToString() }, flight);

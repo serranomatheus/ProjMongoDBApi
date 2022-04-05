@@ -19,6 +19,17 @@ namespace ProjMongoDBAirport.Controllers
         [HttpGet]
         public ActionResult<List<Airport>> Get() =>
             _airportService.Get();
+        [HttpGet("GetCodeIata")]
+        public ActionResult<Airport> GetCodeIataAiport(string codeIata)
+        {
+            var airport = _airportService.GetCodeIata(codeIata);
+            if (airport == null)
+            {
+                return NotFound();
+            }
+            return
+                airport;
+        }
 
 
         [HttpGet("{id:length(24)}", Name = "GetAirport")]

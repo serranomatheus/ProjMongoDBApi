@@ -17,6 +17,9 @@ namespace ProjMongoDBApi.Services
             _passengers = database.GetCollection<Passenger>(settings.PassengerCollectionName);
         }
 
+        public Passenger GetCpf(string cpf) =>
+            _passengers.Find<Passenger>(passenger => passenger.Cpf == cpf).FirstOrDefault();
+
         public List<Passenger> Get() =>
             _passengers.Find(passenger => true).ToList();
 

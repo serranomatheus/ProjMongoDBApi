@@ -18,7 +18,7 @@ namespace Models
         public Airport Destination { get; set; }
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
-        public Passenger Passenger { get; set; }
+        public Aircraft Aircraft { get; set; }
         #endregion
     }
 }

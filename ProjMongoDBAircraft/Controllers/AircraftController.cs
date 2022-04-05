@@ -20,6 +20,17 @@ namespace ProjMongoDBAircraft.Controllers
         public ActionResult<List<Aircraft>> Get() =>
             _aircraftService.Get();
 
+        [HttpGet("Search")]
+        public ActionResult<Aircraft> GetAircraftCode(string code)
+        {
+            var aircraft = _aircraftService.GetAircraftCode(code);
+            if (aircraft == null)
+            {
+                return NotFound();
+            }
+            return
+                aircraft;
+        }
 
         [HttpGet("{id:length(24)}", Name = "GetAircraft")]
         public ActionResult<Aircraft> Get(string id)
