@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjMongoDBApi", "ProjMongoDBApi\ProjMongoDBApi.csproj", "{9B491A60-D454-415F-AC85-8E47F5D7B2C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjMongoDBPassenger", "ProjMongoDBApi\ProjMongoDBPassenger.csproj", "{9B491A60-D454-415F-AC85-8E47F5D7B2C2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "ClassLibrary1\Models.csproj", "{167D7A42-5315-4538-941C-531EF5F47F78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjMongoDBAircraft", "ProjMongoDBAircraft\ProjMongoDBAircraft.csproj", "{385CF535-0C82-4723-957F-B723F3D35C7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{167D7A42-5315-4538-941C-531EF5F47F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{167D7A42-5315-4538-941C-531EF5F47F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{167D7A42-5315-4538-941C-531EF5F47F78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{385CF535-0C82-4723-957F-B723F3D35C7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{385CF535-0C82-4723-957F-B723F3D35C7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{385CF535-0C82-4723-957F-B723F3D35C7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{385CF535-0C82-4723-957F-B723F3D35C7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
