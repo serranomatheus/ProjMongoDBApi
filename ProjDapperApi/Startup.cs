@@ -10,7 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using ProjDapperApiAirport.Repositories;
+using ProjDapperApiAirport.Services;
 
 namespace ProjDapperApi
 {
@@ -32,6 +35,17 @@ namespace ProjDapperApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProjDapperApi", Version = "v1" });
             });
+
+            services.Configure<AirportRepository>(
+                Configuration.GetSection(nameof(AirportRepository)));
+
+            services.AddSingleton<IAirportRepository>(sp =>
+                sp.GetRequiredService<IOptions<AirportRepository>>().Value);
+
+            services.AddSingleton<AirportService>();
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
