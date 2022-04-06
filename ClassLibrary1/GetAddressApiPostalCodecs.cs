@@ -11,12 +11,12 @@ namespace Models
     public class GetAddressApiPostalCodecs
     {
         static readonly HttpClient client = new HttpClient();
-        public static async Task<Address> GetAddress(string cep)
+        public static async Task<Address> GetAddress(string postalCode)
         {
 
             try
             {
-                HttpResponseMessage address = await client.GetAsync("https://viacep.com.br/ws/" + cep + "/json/");
+                HttpResponseMessage address = await client.GetAsync("https://viacep.com.br/ws/" + postalCode + "/json/");
                 address.EnsureSuccessStatusCode();
                 string responseBody = await address.Content.ReadAsStringAsync();
                 var addressObject = JsonConvert.DeserializeObject<Address>(responseBody);
