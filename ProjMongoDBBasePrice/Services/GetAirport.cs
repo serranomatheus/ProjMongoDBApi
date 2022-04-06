@@ -1,33 +1,61 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Models;
-using Newtonsoft.Json;
+﻿//using System.Net.Http;
+//using System.Threading.Tasks;
+//using Models;
+//using Newtonsoft.Json;
 
-namespace ProjMongoDBBasePrice.Services
-{
-    public class GetAirport
-    {
-        static readonly HttpClient client = new HttpClient();
-        public static async Task<Airport> GetAirportApi(string codeIata)
-        {
+//namespace ProjMongoDBBasePrice.Services
+//{
+//    public class GetAirport
+//    {
+//        public async Task<BaseResponse> GetAirport(BasePrice basePrice)
+//        {
+//            var baseResponse = new BaseResponse();
+//            try
+//            {
+//                HttpClient ApiConnection = new HttpClient();
+//                HttpResponseMessage airport = await ApiConnection.GetAsync("https://localhost:44340/api/Airports/GetCodeIata?codeIata=" + basePrice.Origin.CodeIata);
 
-            try
-            {
-                HttpResponseMessage response = await client.GetAsync("https://localhost:44340/api/Airports");
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                var airport = JsonConvert.DeserializeObject<Airport>(responseBody);
+//                string responseBody = await airport.Content.ReadAsStringAsync();
+//                var airportOrigin = JsonConvert.DeserializeObject<Airport>(responseBody);
+//                if (airportOrigin.CodeIata == null)
+//                {
+//                    baseResponse.ConnectionError("Airport origin not found");
+//                    return baseResponse;
+//                }
+//                else
+//                {
+//                    basePrice.Origin = airportOrigin;
+                    
+//                }
+                    
+               
 
-                return airport;
+//                airport = await ApiConnection.GetAsync("https://localhost:44340/api/Airports/GetCodeIata?codeIata=" + basePrice.Destination.CodeIata);
 
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine("\nException Caught!");
-                Console.WriteLine("Message :{0} ", e.Message);
-                throw;
-            }
-        }
-    }
-}
+//                responseBody = await airport.Content.ReadAsStringAsync();
+//                var airportDestination = JsonConvert.DeserializeObject<Airport>(responseBody);
+//                if (airportDestination.CodeIata == null)
+//                {
+//                    baseResponse.ConnectionError("Airport origin not found");
+//                    return baseResponse;
+//                }
+//                else
+//                {
+//                    basePrice.Destination = airportDestination;
+//                    baseResponse.ConnectionSucess(basePrice);
+//                    return baseResponse
+//                }
+
+
+//            }
+//            catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
+//            {
+//                return Problem("Problem with connection  Airport Api");
+//            }
+
+//            _basePriceService.Create(basePrice);
+
+//            return CreatedAtRoute("GetBasePrice", new { id = basePrice.Id.ToString() }, basePrice);
+//        }
+//    }
+//}

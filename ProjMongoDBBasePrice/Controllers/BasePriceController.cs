@@ -55,7 +55,7 @@ namespace ProjMongoDBBasePrice.Controllers
             {
                 HttpClient ApiConnection = new HttpClient();
                 HttpResponseMessage airport = await ApiConnection.GetAsync("https://localhost:44340/api/Airports/GetCodeIata?codeIata=" + basePrice.Origin.CodeIata);
-
+                
                 string responseBody = await airport.Content.ReadAsStringAsync();
                 var airportOrigin = JsonConvert.DeserializeObject<Airport>(responseBody);
                 if (airportOrigin.CodeIata == null)
@@ -73,11 +73,9 @@ namespace ProjMongoDBBasePrice.Controllers
                 
 
             }
-            catch (HttpRequestException e)
+            catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
             {
-                Console.WriteLine("\nException Caught!");
-                Console.WriteLine("Message :{0} ", e.Message);
-                throw;
+                return Problem("Problem with connection  Airport Api");
             }
 
             _basePriceService.Create(basePrice);
