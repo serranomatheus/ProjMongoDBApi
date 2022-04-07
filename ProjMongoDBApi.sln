@@ -19,11 +19,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjMongoDBFlightClass", "P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjMongoDBTicket", "ProjMongoDBTicket\ProjMongoDBTicket.csproj", "{1642A327-BB16-421D-A6B8-117CBA8C2225}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjDapperAirport", "ProjDapperAirport\ProjDapperAirport.csproj", "{4A3B1E67-7123-44EE-8D8D-1AE69BA61B3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjDapperAirport", "ProjDapperAirport\ProjDapperAirport.csproj", "{4A3B1E67-7123-44EE-8D8D-1AE69BA61B3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjDapperApiAirport", "ProjDapperApi\ProjDapperApiAirport.csproj", "{250125F2-F3A6-49A3-B0E8-70FAD93038C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjDapperApiAirport", "ProjDapperApi\ProjDapperApiAirport.csproj", "{250125F2-F3A6-49A3-B0E8-70FAD93038C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjEntityApiAirport", "ProjEntityApiAirport\ProjEntityApiAirport.csproj", "{D9CE6DD9-175D-4CEA-B50D-82B689D8B7CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjEntityApiAirport", "ProjEntityApiAirport\ProjEntityApiAirport.csproj", "{D9CE6DD9-175D-4CEA-B50D-82B689D8B7CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApiDapperEntity", "TestApiDapperEntity\TestApiDapperEntity.csproj", "{81DD3E09-13E0-4B6A-BCAB-AA09FC45C778}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{D9CE6DD9-175D-4CEA-B50D-82B689D8B7CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9CE6DD9-175D-4CEA-B50D-82B689D8B7CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9CE6DD9-175D-4CEA-B50D-82B689D8B7CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81DD3E09-13E0-4B6A-BCAB-AA09FC45C778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81DD3E09-13E0-4B6A-BCAB-AA09FC45C778}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81DD3E09-13E0-4B6A-BCAB-AA09FC45C778}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81DD3E09-13E0-4B6A-BCAB-AA09FC45C778}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
