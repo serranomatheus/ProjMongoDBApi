@@ -19,6 +19,7 @@ namespace Models
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
         public Aircraft Aircraft { get; set; }
+        public string LoginUser { get; set; }
         #endregion
     }
 }

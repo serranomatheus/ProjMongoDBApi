@@ -20,6 +20,7 @@ namespace Models
         public double Value { get; set; }
         
         public DateTime InclusionDate { get; set; }
+        public string LoginUser { get; set; }
         #endregion
     }
 }

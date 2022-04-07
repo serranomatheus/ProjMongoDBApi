@@ -17,6 +17,7 @@ namespace Models
         public string Code { get; set; }
         public string Name { get; set; }
         public string Capacity { get; set; }
+        public string LoginUser { get; set; }
         #endregion
     }
 }

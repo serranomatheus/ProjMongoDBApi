@@ -8,18 +8,17 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Models
 {
-    public class Ticket
+   public abstract class Person
     {
         #region Properties
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        public Flight Flight { get; set; }
-        public Passenger Passenger { get; set; }
-        public double Amount { get; set; }
-        public FlightClass FlightClass { get; set; }
-        public double Promotion { get; set; }
-        public BasePrice BasePrice { get; set; }
+        public string Cpf { get; set; }
+        public string Phone { get; set; }
+        public string Name { get; set; }
+        public DateTime BirthDate { get; set; }
+        public Address Address { get; set; }
         public string LoginUser { get; set; }
         #endregion
     }

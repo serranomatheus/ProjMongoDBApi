@@ -23,21 +23,37 @@ namespace Models
         [JsonProperty("Bairro")]
         public string District { get; set; }
         public string Complement { get; set; }
+        public string Continent { get; set; }
 
-        public Address(string street, string city, string federativeUnit, string district,string number,string complement,string postalCode )
+        public Address(string street, string city, string federativeUnit, string district, string number, string complement, string postalCode)
+        {
+            Street = street;
+            Number = number;
+            City = city;
+            Country = "Brasil";
+            PostalCode = postalCode;
+            FederativeUnit = federativeUnit;
+            District = district;
+            Complement = complement;
+        }
+
+        public Address(string street, string city, string federativeUnit, string district,string number,string complement,string postalCode,string country,string continent )
         {
             Street = street;
             City = city;
-            Country = "Brazil";
+            Country = country;
             FederativeUnit = federativeUnit;
             District = district;
             Number = number;
             Complement = complement;
             PostalCode = postalCode;
-            
+            Continent = continent;
 
         }
+        public Address()
+        {
 
+        }
 
         #endregion
     }

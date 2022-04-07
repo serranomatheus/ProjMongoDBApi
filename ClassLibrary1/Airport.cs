@@ -12,6 +12,7 @@ namespace Models
         public string Name { get; set; }
         public  Address Address { get; set; }
         public string CodeIata { get; set; }
+        public string LoginUser { get; set; }
         #endregion
     }
 }
