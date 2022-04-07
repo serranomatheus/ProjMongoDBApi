@@ -15,6 +15,9 @@ namespace ProjMongoDBUser.Services
             var database = client.GetDatabase(settings.DatabaseName);
             _users = database.GetCollection<User>(settings.UserCollectionName);
         }
+
+        public User GetLogin(string login)=>
+            _users.Find<User>(user => user.Login == login).FirstOrDefault();
         public User GetCpf(string cpf) =>
             _users.Find<User>(user => user.Cpf == cpf).FirstOrDefault();
         public List<User> Get() =>

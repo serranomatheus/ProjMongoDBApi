@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using ProjMongoDBApi.Services;
+using ProjMongoDBFlightClass.Services;
 
 namespace ProjMongoDBFlightClass.Controllers
 {
@@ -35,13 +37,32 @@ namespace ProjMongoDBFlightClass.Controllers
         }
 
         [HttpPost]
-        public ActionResult<FlightClass> Create(FlightClass flightClass)
+        public async Task<ActionResult<FlightClass>> Create(FlightClass flightClass)
         {
-            _flightClassService.Create(flightClass);
 
-            return CreatedAtRoute("GetFlightClass", new { id = flightClass.Id.ToString() }, flightClass);
+            var responseGetLogin = await GetLoginUser.GetLogin(flightClass);
+
+            if (responseGetLogin.Sucess == true)
+            {
+                _flightClassService.Create(flightClass);
+                return CreatedAtRoute("GetFlightClass", new { id = flightClass.Id.ToString() }, flightClass);
+            }
+            else
+            {
+                return GetResponse(responseGetLogin);
+            }
+
+
         }
 
+        private ActionResult GetResponse(BaseResponse baseResponse)
+        {
+            if (baseResponse.Sucess == true)
+            {
+                return Ok(baseResponse.Result);
+            }
+            return BadRequest(baseResponse.Error);
+        }
         [HttpPut("{id:length(24)}")]
         public IActionResult Update(string id, FlightClass flightClassIn)
         {

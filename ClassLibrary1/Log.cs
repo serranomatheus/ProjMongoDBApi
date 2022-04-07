@@ -20,7 +20,6 @@ namespace Models
         public string Operation { get; set; }
         public DateTime Date { get; set; }
 
-
         #endregion
     }
 }

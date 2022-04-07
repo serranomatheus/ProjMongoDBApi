@@ -33,6 +33,19 @@ namespace ProjMongoDBUser.Controllers
                 user;
         }
 
+
+        [HttpGet("GetLogin")]
+        public ActionResult<User> GetLogin(string loginUser)
+        {
+            var user = _userService.GetLogin(loginUser);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return
+                user;
+        }
+
         [HttpGet("{id:length(24)}", Name = "GetUser")]
         public ActionResult<User> Get(string id)
         {
@@ -53,13 +66,31 @@ namespace ProjMongoDBUser.Controllers
             var addressApi = await Models.GetAddressApiPostalCodecs.GetAddress(user.Address.PostalCode);
             user.Address = new Address(addressApi.Street, addressApi.City, addressApi.FederativeUnit, addressApi.District, user.Address.Number, user.Address.Complement, addressApi.PostalCode);
 
-
-
             if (!CpfService.CheckCpfDB(user.Cpf, _userService))
                 return null;
-            _userService.Create(user);
 
-            return CreatedAtRoute("GetUser", new { id = user.Id.ToString() }, user);
+
+            var responseGetLogin =  CheckLoginUser.CheckLogin(user, _userService);
+
+            if (responseGetLogin.Sucess == true)
+            {
+                _userService.Create(user);
+                return CreatedAtRoute("GetUser", new { id = user.Id.ToString() }, user);
+            }
+            else
+            {
+                return GetResponse(responseGetLogin);
+            }         
+
+           
+        }
+        private ActionResult GetResponse(BaseResponse baseResponse)
+        {
+            if (baseResponse.Sucess == true)
+            {
+                return Ok(baseResponse.Result);
+            }
+            return BadRequest(baseResponse.Error);
         }
 
         [HttpPut("{id:length(24)}")]

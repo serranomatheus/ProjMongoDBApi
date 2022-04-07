@@ -59,9 +59,27 @@ namespace ProjMongoDBApi.Controllers
 
             if (!CpfService.CheckCpfDB(passenger.Cpf, _passengerService))
                 return null;
-            _passengerService.Create(passenger);
+            var responseGetLogin = await GetLoginUser.GetLogin(passenger);
 
-            return CreatedAtRoute("GetPassenger", new { id = passenger.Id.ToString() }, passenger);
+            if(responseGetLogin.Sucess == true)
+            {
+                _passengerService.Create(passenger);
+                return Ok(passenger);
+            }
+            else
+            {
+                return GetResponse(responseGetLogin);
+            }
+            
+            
+        }
+        private ActionResult GetResponse(BaseResponse baseResponse)
+        {
+            if (baseResponse.Sucess == true)
+            {
+                return Ok(baseResponse.Result);
+            }
+            return BadRequest(baseResponse.Error);
         }
 
         [HttpPut("{id:length(24)}")]
@@ -93,5 +111,8 @@ namespace ProjMongoDBApi.Controllers
 
             return NoContent();
         }
+        
+      
+    
     }
 }

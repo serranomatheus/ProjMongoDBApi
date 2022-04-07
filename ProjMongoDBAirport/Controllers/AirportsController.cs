@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using ProjMongoDBAirport.Services;
 using ProjMongoDBApi.Services;
 
 namespace ProjMongoDBAirport.Controllers
@@ -52,9 +53,29 @@ namespace ProjMongoDBAirport.Controllers
             var addressApi = await Models.GetAddressApiPostalCodecs.GetAddress(airport.Address.PostalCode);
             airport.Address = new Address(addressApi.Street, addressApi.City, addressApi.FederativeUnit, addressApi.District, airport.Address.Number, airport.Address.Complement,addressApi.PostalCode) ;
 
-            _airportService.Create(airport);
 
-            return CreatedAtRoute("GetAirport", new { id = airport.Id.ToString() }, airport);
+
+            var responseGetLogin = await GetLoginUser.GetLogin(airport);
+
+            if (responseGetLogin.Sucess == true)
+            {
+                _airportService.Create(airport);
+                return CreatedAtRoute("GetAirport", new { id = airport.Id.ToString() }, airport);
+            }
+            else
+            {
+                return GetResponse(responseGetLogin);
+            }          
+
+            
+        }
+        private ActionResult GetResponse(BaseResponse baseResponse)
+        {
+            if (baseResponse.Sucess == true)
+            {
+                return Ok(baseResponse.Result);
+            }
+            return BadRequest(baseResponse.Error);
         }
 
         [HttpPut("{id:length(24)}")]

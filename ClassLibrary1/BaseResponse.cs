@@ -14,6 +14,7 @@ namespace Models
 
         public BaseResponse()
         {
+            Error = new List<string>();
             Sucess = true;
 
         }

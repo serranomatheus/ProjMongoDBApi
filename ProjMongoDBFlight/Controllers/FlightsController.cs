@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models;
 using Newtonsoft.Json;
 using ProjMongoDBApi.Services;
+using ProjMongoDBFlight.Services;
 
 namespace ProjMongoDBFlight.Controllers
 {
@@ -88,11 +89,28 @@ namespace ProjMongoDBFlight.Controllers
                 throw;
             }
 
-            _flightService.Create(flight);
+            var responseGetLogin = await GetLoginUser.GetLogin(flight);
 
-            return CreatedAtRoute("GetFlight", new { id = flight.Id.ToString() }, flight);
+            if (responseGetLogin.Sucess == true)
+            {
+                _flightService.Create(flight);
+                return CreatedAtRoute("GetFlight", new { id = flight.Id.ToString() }, flight);
+            }
+            else
+            {
+                return GetResponse(responseGetLogin);
+            }         
+
+            
         }
-
+        private ActionResult GetResponse(BaseResponse baseResponse)
+        {
+            if (baseResponse.Sucess == true)
+            {
+                return Ok(baseResponse.Result);
+            }
+            return BadRequest(baseResponse.Error);
+        }
         [HttpPut("{id:length(24)}")]
         public IActionResult Update(string id, Flight flightIn)
         {

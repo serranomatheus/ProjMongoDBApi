@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models;
 using Newtonsoft.Json;
 using ProjMongoDBApi.Services;
+using ProjMongoDBBasePrice.Services;
 
 namespace ProjMongoDBBasePrice.Controllers
 {
@@ -77,12 +78,30 @@ namespace ProjMongoDBBasePrice.Controllers
             {
                 return Problem("Problem with connection  Airport Api");
             }
+            
+            var responseGetLogin = await GetLoginUser.GetLogin(basePrice);
 
-            _basePriceService.Create(basePrice);
+            if (responseGetLogin.Sucess == true)
+            {
+                _basePriceService.Create(basePrice);
+                return CreatedAtRoute("GetBasePrice", new { id = basePrice.Id.ToString() }, basePrice);
+            }
+            else
+            {
+                return GetResponse(responseGetLogin);
+            }
+            
 
-            return CreatedAtRoute("GetBasePrice", new { id = basePrice.Id.ToString() }, basePrice);
+            
         }
-
+        private ActionResult GetResponse(BaseResponse baseResponse)
+        {
+            if (baseResponse.Sucess == true)
+            {
+                return Ok(baseResponse.Result);
+            }
+            return BadRequest(baseResponse.Error);
+        }
         [HttpPut("{id:length(24)}")]
         public IActionResult Update(string id, BasePrice basePriceIn)
         {

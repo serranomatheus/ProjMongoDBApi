@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using ProjMongoDBAircraft.Services;
 using ProjMongoDBApi.Services;
 
 namespace ProjMongoDBAircraft.Controllers
@@ -46,11 +48,30 @@ namespace ProjMongoDBAircraft.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Aircraft> Create(Aircraft aircraft)
+        public async Task<ActionResult<Aircraft>> Create(Aircraft aircraft)
         {
-            _aircraftService.Create(aircraft);
+            
+            var responseGetLogin = await GetLoginUser.GetLogin(aircraft);
 
-            return CreatedAtRoute("GetAircraft", new { id = aircraft.Id.ToString() }, aircraft);
+            if (responseGetLogin.Sucess == true)
+            {
+                _aircraftService.Create(aircraft);
+                return CreatedAtRoute("GetAircraft", new { id = aircraft.Id.ToString() }, aircraft);
+            }
+            else
+            {
+                return GetResponse(responseGetLogin);
+            }
+
+           
+        }
+        private ActionResult GetResponse(BaseResponse baseResponse)
+        {
+            if (baseResponse.Sucess == true)
+            {
+                return Ok(baseResponse.Result);
+            }
+            return BadRequest(baseResponse.Error);
         }
 
         [HttpPut("{id:length(24)}")]

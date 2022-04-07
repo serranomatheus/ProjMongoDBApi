@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models;
 using Newtonsoft.Json;
 using ProjMongoDBApi.Services;
+using ProjMongoDBTicket.Services;
 
 namespace ProjMongoDBTicket.Controllers
 {
@@ -80,11 +81,27 @@ namespace ProjMongoDBTicket.Controllers
                 Console.WriteLine("Message :{0} ", e.Message);
                 throw;
             }
+            var responseGetLogin = await GetLoginUser.GetLogin(ticket);
 
+            if (responseGetLogin.Sucess == true)
+            {
+                _ticketService.Create(ticket);
+                return CreatedAtRoute("GetTicket", new { id = ticket.Id.ToString() }, ticket);
+            }
+            else
+            {
+                return GetResponse(responseGetLogin);
+            }          
 
-            _ticketService.Create(ticket);
-
-            return CreatedAtRoute("GetTicket", new { id = ticket.Id.ToString() }, ticket);
+           
+        }
+        private ActionResult GetResponse(BaseResponse baseResponse)
+        {
+            if (baseResponse.Sucess == true)
+            {
+                return Ok(baseResponse.Result);
+            }
+            return BadRequest(baseResponse.Error);
         }
 
         [HttpPut("{id:length(24)}")]
