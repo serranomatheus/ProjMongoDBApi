@@ -86,6 +86,10 @@ namespace ProjMongoDBTicket.Controllers
             if (responseGetLogin.Sucess == true)
             {
                 _ticketService.Create(ticket);
+                
+                var ticketJson = JsonConvert.SerializeObject(ticket);
+                Services.PostLogApi.PostLog(new Log(ticket.LoginUser, null, ticketJson, "Create"));
+
                 return CreatedAtRoute("GetTicket", new { id = ticket.Id.ToString() }, ticket);
             }
             else
@@ -114,6 +118,10 @@ namespace ProjMongoDBTicket.Controllers
                 return NotFound();
             }
 
+            var ticketJson = JsonConvert.SerializeObject(ticket);
+            var ticketInJson = JsonConvert.SerializeObject(ticketIn);
+            Services.PostLogApi.PostLog(new Log(ticketIn.LoginUser, ticketJson, ticketInJson, "UpDate"));
+
             _ticketService.Update(id, ticketIn);
 
             return NoContent();
@@ -128,6 +136,9 @@ namespace ProjMongoDBTicket.Controllers
             {
                 return NotFound();
             }
+            
+            var ticketJson = JsonConvert.SerializeObject(ticket);
+            Services.PostLogApi.PostLog(new Log(ticket.LoginUser, ticketJson, null, "Delete"));
 
             _ticketService.Remove(ticket.Id);
 

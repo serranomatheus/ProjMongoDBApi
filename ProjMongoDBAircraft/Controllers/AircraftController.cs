@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Newtonsoft.Json;
 using ProjMongoDBAircraft.Services;
 using ProjMongoDBApi.Services;
 
@@ -56,6 +57,10 @@ namespace ProjMongoDBAircraft.Controllers
             if (responseGetLogin.Sucess == true)
             {
                 _aircraftService.Create(aircraft);
+
+                var aircraftJson = JsonConvert.SerializeObject(aircraft);
+                Services.PostLogApi.PostLog(new Log(aircraft.LoginUser, null, aircraftJson, "Create"));
+
                 return CreatedAtRoute("GetAircraft", new { id = aircraft.Id.ToString() }, aircraft);
             }
             else
@@ -84,6 +89,10 @@ namespace ProjMongoDBAircraft.Controllers
                 return NotFound();
             }
 
+            var aircraftJson = JsonConvert.SerializeObject(aircraft);
+            var aircraftInJson = JsonConvert.SerializeObject(aircraftIn);
+            Services.PostLogApi.PostLog(new Log(aircraftIn.LoginUser, aircraftJson, aircraftInJson, "UpDate"));
+            
             _aircraftService.Update(id, aircraftIn);
 
             return NoContent();
@@ -98,6 +107,9 @@ namespace ProjMongoDBAircraft.Controllers
             {
                 return NotFound();
             }
+
+            var aircraftJson = JsonConvert.SerializeObject(aircraft);
+            Services.PostLogApi.PostLog(new Log(aircraft.LoginUser, aircraftJson, null, "Delete"));
 
             _aircraftService.Remove(aircraft.Id);
 

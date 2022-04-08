@@ -29,6 +29,10 @@ namespace ProjEntityApiAirport.Controllers
         }
 
         // GET: api/AirportData/5
+
+
+
+
         [HttpGet("{id}")]
         public async Task<ActionResult<AirportData>> GetAirportData(int id)
         {
@@ -103,6 +107,19 @@ namespace ProjEntityApiAirport.Controllers
         private bool AirportDataExists(int id)
         {
             return _context.AirportData.Any(e => e.Id == id);
+        }
+
+
+        [HttpGet("Code")]
+        public async Task<ActionResult<AirportData>> GetAirportCode(string code)
+        {
+            var airportData = await _context.AirportData.Where(d => d.Code == code).FirstOrDefaultAsync();
+            if (airportData == null)
+            {
+                return NotFound();
+            }
+
+            return airportData;
         }
     }
 }

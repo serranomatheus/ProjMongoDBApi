@@ -84,6 +84,10 @@ namespace ProjMongoDBBasePrice.Controllers
             if (responseGetLogin.Sucess == true)
             {
                 _basePriceService.Create(basePrice);
+
+                var basePriceJson = JsonConvert.SerializeObject(basePrice);
+                Services.PostLogApi.PostLog(new Log(basePrice.LoginUser, null, basePriceJson, "Create"));
+
                 return CreatedAtRoute("GetBasePrice", new { id = basePrice.Id.ToString() }, basePrice);
             }
             else
@@ -112,6 +116,10 @@ namespace ProjMongoDBBasePrice.Controllers
                 return NotFound();
             }
 
+            var basePriceJson = JsonConvert.SerializeObject(basePrice);
+            var basePriceInJson = JsonConvert.SerializeObject(basePriceIn);
+            Services.PostLogApi.PostLog(new Log(basePriceIn.LoginUser, basePriceJson, basePriceInJson, "UpDate"));
+
             _basePriceService.Update(id, basePriceIn);
 
             return NoContent();
@@ -126,6 +134,9 @@ namespace ProjMongoDBBasePrice.Controllers
             {
                 return NotFound();
             }
+
+            var basePriceJson = JsonConvert.SerializeObject(basePrice);
+            Services.PostLogApi.PostLog(new Log(basePrice.LoginUser, basePriceJson, null, "Delete"));
 
             _basePriceService.Remove(basePrice.Id);
 

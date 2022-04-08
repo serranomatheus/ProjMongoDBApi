@@ -94,6 +94,10 @@ namespace ProjMongoDBFlight.Controllers
             if (responseGetLogin.Sucess == true)
             {
                 _flightService.Create(flight);
+
+                var flightJson = JsonConvert.SerializeObject(flight);
+                Services.PostLogApi.PostLog(new Log(flight.LoginUser, null, flightJson, "Create"));
+
                 return CreatedAtRoute("GetFlight", new { id = flight.Id.ToString() }, flight);
             }
             else
@@ -121,6 +125,10 @@ namespace ProjMongoDBFlight.Controllers
                 return NotFound();
             }
 
+            var flightJson = JsonConvert.SerializeObject(flight);
+            var flightInJson = JsonConvert.SerializeObject(flightIn);
+            Services.PostLogApi.PostLog(new Log(flightIn.LoginUser, flightJson, flightInJson, "UpDate"));
+
             _flightService.Update(id, flightIn);
 
             return NoContent();
@@ -135,6 +143,9 @@ namespace ProjMongoDBFlight.Controllers
             {
                 return NotFound();
             }
+
+            var flightjson = JsonConvert.SerializeObject(flight);
+            Services.PostLogApi.PostLog(new Log(flight.LoginUser, flightjson, null, "Delete"));
 
             _flightService.Remove(flight.Id);
 

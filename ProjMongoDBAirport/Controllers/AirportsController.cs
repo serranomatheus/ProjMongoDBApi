@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Newtonsoft.Json;
 using ProjMongoDBAirport.Services;
 using ProjMongoDBApi.Services;
 
@@ -60,6 +61,10 @@ namespace ProjMongoDBAirport.Controllers
             if (responseGetLogin.Sucess == true)
             {
                 _airportService.Create(airport);
+
+                var airportJson = JsonConvert.SerializeObject(airport);
+                Services.PostLogApi.PostLog(new Log(airport.LoginUser, null, airportJson, "Create"));
+
                 return CreatedAtRoute("GetAirport", new { id = airport.Id.ToString() }, airport);
             }
             else
@@ -88,6 +93,10 @@ namespace ProjMongoDBAirport.Controllers
                 return NotFound();
             }
 
+            var airportJson = JsonConvert.SerializeObject(airport);
+            var airportInJson = JsonConvert.SerializeObject(airportIn);
+            Services.PostLogApi.PostLog(new Log(airportIn.LoginUser, airportJson, airportInJson, "UpDate"));
+
             _airportService.Update(id, airportIn);
 
             return NoContent();
@@ -102,6 +111,9 @@ namespace ProjMongoDBAirport.Controllers
             {
                 return NotFound();
             }
+
+            var airportJson = JsonConvert.SerializeObject(airport);
+            Services.PostLogApi.PostLog(new Log(airport.LoginUser, airportJson, null, "Delete"));
 
             _airportService.Remove(airport.Id);
 

@@ -12,6 +12,7 @@ namespace Models
         public string Code { get; set; }
         public string Name { get; set; }
         public double Value { get; set; }
+        public string LoginUser { get; set; }
         #endregion
     }
 }

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
-
+using Newtonsoft.Json;
 using ProjMongoDBApi.Services;
 using ProjMongoDBPassenger.Services;
 
@@ -64,6 +64,10 @@ namespace ProjMongoDBApi.Controllers
             if(responseGetLogin.Sucess == true)
             {
                 _passengerService.Create(passenger);
+
+                var passengerJson = JsonConvert.SerializeObject(passenger);
+                PostLogApi.PostLog(new Log(passenger.LoginUser, null, passengerJson, "Create"));
+
                 return Ok(passenger);
             }
             else
@@ -92,6 +96,10 @@ namespace ProjMongoDBApi.Controllers
                 return NotFound();
             }
 
+            var passengerJson = JsonConvert.SerializeObject(passenger);
+            var passengerInJson = JsonConvert.SerializeObject(passengerIn);
+            PostLogApi.PostLog(new Log(passengerIn.LoginUser, passengerJson, passengerInJson, "UpDate"));
+
             _passengerService.Update(id, passengerIn);
 
             return NoContent();
@@ -106,6 +114,9 @@ namespace ProjMongoDBApi.Controllers
             {
                 return NotFound();
             }
+
+            var passengerJson = JsonConvert.SerializeObject(passenger);
+            PostLogApi.PostLog(new Log(passenger.LoginUser, passengerJson, null, "Delete"));
 
             _passengerService.Remove(passenger.Id);
 

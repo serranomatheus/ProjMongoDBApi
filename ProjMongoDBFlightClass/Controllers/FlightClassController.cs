@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Newtonsoft.Json;
 using ProjMongoDBApi.Services;
 using ProjMongoDBFlightClass.Services;
 
@@ -45,6 +46,10 @@ namespace ProjMongoDBFlightClass.Controllers
             if (responseGetLogin.Sucess == true)
             {
                 _flightClassService.Create(flightClass);
+
+                var flightClassJson = JsonConvert.SerializeObject(flightClass);
+                Services.PostLogApi.PostLog(new Log(flightClass.LoginUser, null, flightClassJson, "Create"));
+
                 return CreatedAtRoute("GetFlightClass", new { id = flightClass.Id.ToString() }, flightClass);
             }
             else
@@ -73,6 +78,10 @@ namespace ProjMongoDBFlightClass.Controllers
                 return NotFound();
             }
 
+            var flightClassJson = JsonConvert.SerializeObject(flightClass);
+            var flightClassInJson = JsonConvert.SerializeObject(flightClassIn);
+            Services.PostLogApi.PostLog(new Log(flightClassIn.LoginUser, flightClassJson, flightClassInJson, "UpDate"));
+
             _flightClassService.Update(id, flightClassIn);
 
             return NoContent();
@@ -87,6 +96,8 @@ namespace ProjMongoDBFlightClass.Controllers
             {
                 return NotFound();
             }
+            var flightClassJson = JsonConvert.SerializeObject(flightClass);
+            Services.PostLogApi.PostLog(new Log(flightClass.LoginUser, flightClassJson, null, "Delete"));
 
             _flightClassService.Remove(flightClass.Id);
 

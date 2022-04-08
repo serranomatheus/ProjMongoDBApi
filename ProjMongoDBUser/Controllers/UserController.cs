@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Newtonsoft.Json;
 using ProjMongoDBUser.Services;
 
 namespace ProjMongoDBUser.Controllers
@@ -70,11 +71,15 @@ namespace ProjMongoDBUser.Controllers
                 return null;
 
 
-            var responseGetLogin =  CheckLoginUser.CheckLogin(user, _userService);
+            var responseGetLogin =  await CheckLoginUser.GetLogin(user);
 
             if (responseGetLogin.Sucess == true)
             {
                 _userService.Create(user);
+                
+                var userJson = JsonConvert.SerializeObject(user);
+               Services.PostLogApi.PostLog(new Log(user.LoginUser, null, userJson, "Create"));
+
                 return CreatedAtRoute("GetUser", new { id = user.Id.ToString() }, user);
             }
             else
@@ -103,6 +108,10 @@ namespace ProjMongoDBUser.Controllers
                 return NotFound();
             }
 
+            var userJson = JsonConvert.SerializeObject(user);
+            var userInJson = JsonConvert.SerializeObject(userIn);
+            Services.PostLogApi.PostLog(new Log(userIn.LoginUser, userJson, userInJson, "UpDate"));
+
             _userService.Update(id, userIn);
 
             return NoContent();
@@ -118,6 +127,9 @@ namespace ProjMongoDBUser.Controllers
                 return NotFound();
             }
 
+            var userJson = JsonConvert.SerializeObject(user);
+            Services.PostLogApi.PostLog(new Log(user.LoginUser, userJson, null, "Delete"));
+            
             _userService.Remove(user.Id);
 
             return NoContent();
