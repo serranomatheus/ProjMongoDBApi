@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -15,17 +16,45 @@ namespace ProjMongoDBFlight.Controllers
     [ApiController]
     public class FlightsController : ControllerBase
     {
+        [HttpPost]
+        [Route("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
+        {
+            // Recupera o usuário
+            var user = await GetUser.GetLogin(model.Login, model.PassWord);
+
+            // Verifica se o usuário existe
+            if (user == null)
+                return NotFound(new { message = "Usuário ou senha inválidos" });
+
+            // Gera o Token
+            var token = TokenService.GenerateToken(user);
+
+            // Oculta a senha
+            user.PassWord = "";
+
+            // Retorna os dados
+            return new
+            {
+                user = user,
+                token = token
+            };
+        }
+
         private readonly FlightService _flightService;
         public FlightsController(FlightService flightService)
         {
             _flightService = flightService;
         }
 
-        [HttpGet]        
+        [HttpGet]
+        [Authorize(Roles = "GetFlight")]
         public ActionResult<List<Flight>> Get() =>
             _flightService.Get();
 
         [HttpGet("Search")]
+        [Authorize(Roles = "SearchFlight")]
         public ActionResult<Flight> GetFlight(string origin, string destination)
         {
             var flight = _flightService.GetFlight(origin,destination);
@@ -38,6 +67,7 @@ namespace ProjMongoDBFlight.Controllers
         }
 
         [HttpGet("{id:length(24)}", Name = "GetFlight")]
+        [Authorize(Roles = "GetFlightId")]
         public ActionResult<Flight> Get(string id)
         {
             var flight = _flightService.Get(id);
@@ -51,6 +81,7 @@ namespace ProjMongoDBFlight.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "CreateFlight")]
         public async Task<ActionResult<Flight>> Create(Flight flight)
         {
             try
@@ -116,6 +147,7 @@ namespace ProjMongoDBFlight.Controllers
             return BadRequest(baseResponse.Error);
         }
         [HttpPut("{id:length(24)}")]
+        [Authorize(Roles = "UpdateFlight")]
         public IActionResult Update(string id, Flight flightIn)
         {
             var flight = _flightService.Get(id);
@@ -135,6 +167,7 @@ namespace ProjMongoDBFlight.Controllers
         }
 
         [HttpDelete("{id:length(24)}")]
+        [Authorize(Roles = "DeleteFlight")]
         public IActionResult Delete(string id)
         {
             var flight = _flightService.Get(id);

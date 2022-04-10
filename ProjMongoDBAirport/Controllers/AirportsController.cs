@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -13,6 +14,32 @@ namespace ProjMongoDBAirport.Controllers
     [ApiController]
     public class AirportsController : ControllerBase
     {
+        [HttpPost]
+        [Route("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
+        {
+            // Recupera o usuário
+            var user = await GetUser.GetLogin(model.Login, model.PassWord);
+
+            // Verifica se o usuário existe
+            if (user == null)
+                return NotFound(new { message = "Usuário ou senha inválidos" });
+
+            // Gera o Token
+            var token = TokenService.GenerateToken(user);
+
+            // Oculta a senha
+            user.PassWord = "";
+
+            // Retorna os dados
+            return new
+            {
+                user = user,
+                token = token
+            };
+        }
+
         private readonly AirportService _airportService;
         public AirportsController(AirportService airportService)
         {
@@ -20,9 +47,11 @@ namespace ProjMongoDBAirport.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "GetAirport")]
         public ActionResult<List<Airport>> Get() =>
             _airportService.Get();
         [HttpGet("GetCodeIata")]
+        [Authorize(Roles = "GetAirportCodeIata")]
         public ActionResult<Airport> GetCodeIataAiport(string codeIata)
         {
             var airport = _airportService.GetCodeIata(codeIata);
@@ -36,6 +65,7 @@ namespace ProjMongoDBAirport.Controllers
 
 
         [HttpGet("{id:length(24)}", Name = "GetAirport")]
+        [Authorize(Roles = "GetAirportId")]
         public ActionResult<Airport> Get(string id)
         {
             var airport = _airportService.Get(id);
@@ -49,6 +79,7 @@ namespace ProjMongoDBAirport.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "CreateAirport")]
         public async Task<ActionResult<Airport>> Create(Airport airport)
         {
             var addressApi = await Models.GetAddressApiPostalCodecs.GetAddress(airport.Address.PostalCode);
@@ -84,6 +115,7 @@ namespace ProjMongoDBAirport.Controllers
         }
 
         [HttpPut("{id:length(24)}")]
+        [Authorize(Roles = "UpdateAirport")]
         public IActionResult Update(string id, Airport airportIn)
         {
             var airport = _airportService.Get(id);
@@ -103,6 +135,7 @@ namespace ProjMongoDBAirport.Controllers
         }
 
         [HttpDelete("{id:length(24)}")]
+        [Authorize(Roles = "DeleteAirport")]
         public IActionResult Delete(string id)
         {
             var airport = _airportService.Get(id);

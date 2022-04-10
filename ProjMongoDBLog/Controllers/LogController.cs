@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -11,6 +12,32 @@ namespace ProjMongoDBLog.Controllers
     [ApiController]
     public class LogController : ControllerBase
     {
+        [HttpPost]
+        [Route("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
+        {
+            // Recupera o usuário
+            var user = await GetUser.GetLogin(model.Login, model.PassWord);
+
+            // Verifica se o usuário existe
+            if (user == null)
+                return NotFound(new { message = "Usuário ou senha inválidos" });
+
+            // Gera o Token
+            var token = TokenService.GenerateToken(user);
+
+            // Oculta a senha
+            user.PassWord = "";
+
+            // Retorna os dados
+            return new
+            {
+                user = user,
+                token = token
+            };
+        }
+
         private readonly LogService _logService;
         public LogController(LogService logService)
         {
@@ -18,11 +45,13 @@ namespace ProjMongoDBLog.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "GetLog")]
         public ActionResult<List<Log>> Get() =>
             _logService.Get();
 
 
         [HttpGet("{id:length(24)}", Name = "GetLog")]
+        [Authorize(Roles = "GetLogId")]
         public ActionResult<Log> Get(string id)
         {
             var log = _logService.Get(id);
@@ -36,6 +65,7 @@ namespace ProjMongoDBLog.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "CreateLog")]
         public ActionResult<Log> Create(Log log)
         {
             _logService.Create(log);
@@ -45,6 +75,7 @@ namespace ProjMongoDBLog.Controllers
         
 
         [HttpPut("{id:length(24)}")]
+        [Authorize(Roles = "UpdateLog")]
         public IActionResult Update(string id, Log logIn)
         {
             var log = _logService.Get(id);
@@ -60,6 +91,7 @@ namespace ProjMongoDBLog.Controllers
         }
 
         [HttpDelete("{id:length(24)}")]
+        [Authorize(Roles = "DeleteLog")]
         public IActionResult Delete(string id)
         {
             var log = _logService.Get(id);

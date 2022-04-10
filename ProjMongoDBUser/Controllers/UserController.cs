@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -12,6 +13,32 @@ namespace ProjMongoDBUser.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        [HttpPost]
+        [Route("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
+        {
+            // Recupera o usuário
+            var user = await GetUser.GetLogin(model.Login, model.PassWord);
+
+            // Verifica se o usuário existe
+            if (user == null)
+                return NotFound(new { message = "Usuário ou senha inválidos" });
+
+            // Gera o Token
+            var token = TokenService.GenerateToken(user);
+
+            // Oculta a senha
+            user.PassWord = "";
+
+            // Retorna os dados
+            return new
+            {
+                user = user,
+                token = token
+            };
+        }
+
         private readonly UserService _userService;
         public UserController(UserService userService)
         {
@@ -19,10 +46,12 @@ namespace ProjMongoDBUser.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "GetUser")]
         public ActionResult<List<User>> Get() =>
             _userService.Get();
 
         [HttpGet("Search")]
+        [Authorize(Roles = "GetUserCpf")]
         public ActionResult<User> GetUserCpf(string cpf)
         {
             var user = _userService.GetCpf(cpf);
@@ -36,6 +65,7 @@ namespace ProjMongoDBUser.Controllers
 
 
         [HttpGet("GetLogin")]
+        [Authorize(Roles = "GetUserLogin")]
         public ActionResult<User> GetLogin(string loginUser)
         {
             var user = _userService.GetLogin(loginUser);
@@ -48,6 +78,7 @@ namespace ProjMongoDBUser.Controllers
         }
 
         [HttpGet("{id:length(24)}", Name = "GetUser")]
+        [Authorize(Roles = "GetUserId")]
         public ActionResult<User> Get(string id)
         {
             var user = _userService.Get(id);
@@ -61,6 +92,7 @@ namespace ProjMongoDBUser.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "CreateUser")]
         public async Task<ActionResult<User>> Create(User user)
         {
 
@@ -99,6 +131,7 @@ namespace ProjMongoDBUser.Controllers
         }
 
         [HttpPut("{id:length(24)}")]
+        [Authorize(Roles = "UpdateUser")]
         public IActionResult Update(string id, User userIn)
         {
             var user = _userService.Get(id);
@@ -118,6 +151,7 @@ namespace ProjMongoDBUser.Controllers
         }
 
         [HttpDelete("{id:length(24)}")]
+        [Authorize(Roles = "DeleteUser")]
         public IActionResult Delete(string id)
         {
             var user = _userService.Get(id);

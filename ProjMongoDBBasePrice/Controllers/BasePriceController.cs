@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -15,6 +16,32 @@ namespace ProjMongoDBBasePrice.Controllers
     [ApiController]
     public class BasePriceController : ControllerBase
     {
+        [HttpPost]
+        [Route("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
+        {
+            // Recupera o usuário
+            var user = await GetUser.GetLogin(model.Login, model.PassWord);
+
+            // Verifica se o usuário existe
+            if (user == null)
+                return NotFound(new { message = "Usuário ou senha inválidos" });
+
+            // Gera o Token
+            var token = TokenService.GenerateToken(user);
+
+            // Oculta a senha
+            user.PassWord = "";
+
+            // Retorna os dados
+            return new
+            {
+                user = user,
+                token = token
+            };
+        }
+
         private readonly BasePriceService _basePriceService;
         public BasePriceController(BasePriceService basePriceService)
         {
@@ -22,6 +49,7 @@ namespace ProjMongoDBBasePrice.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "GetBasePrice")]
         public ActionResult<List<BasePrice>> Get() =>
             _basePriceService.Get();
         [HttpGet("Search")]
@@ -37,6 +65,7 @@ namespace ProjMongoDBBasePrice.Controllers
         }
 
         [HttpGet("{id:length(24)}", Name = "GetBasePrice")]
+        [Authorize(Roles = "GetBasePriceId")]
         public ActionResult<BasePrice> Get(string id)
         {
             var basePrice = _basePriceService.Get(id);
@@ -50,6 +79,7 @@ namespace ProjMongoDBBasePrice.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "CreateBasePrice")]
         public async Task<ActionResult<BasePrice>> Create(BasePrice basePrice)
         {
             try
@@ -107,6 +137,7 @@ namespace ProjMongoDBBasePrice.Controllers
             return BadRequest(baseResponse.Error);
         }
         [HttpPut("{id:length(24)}")]
+        [Authorize(Roles = "UpdateBasePrice")]
         public IActionResult Update(string id, BasePrice basePriceIn)
         {
             var basePrice = _basePriceService.Get(id);
@@ -126,6 +157,7 @@ namespace ProjMongoDBBasePrice.Controllers
         }
 
         [HttpDelete("{id:length(24)}")]
+        [Authorize(Roles = "DeleteBasePrice")]
         public IActionResult Delete(string id)
         {
             var basePrice = _basePriceService.Get(id);

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -13,6 +14,32 @@ namespace ProjMongoDBAircraft.Controllers
     [ApiController]
     public class AircraftController : ControllerBase
     {
+        [HttpPost]
+        [Route("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
+        {
+            // Recupera o usuário
+            var user = await GetUser.GetLogin(model.Login, model.PassWord);
+
+            // Verifica se o usuário existe
+            if (user == null)
+                return NotFound(new { message = "Usuário ou senha inválidos" });
+
+            // Gera o Token
+            var token = TokenService.GenerateToken(user);
+
+            // Oculta a senha
+            user.PassWord = "";
+
+            // Retorna os dados
+            return new
+            {
+                user = user,
+                token = token
+            };
+        }
+
         private readonly AircraftService _aircraftService;
         public AircraftController(AircraftService aircraftService)
         {
@@ -20,10 +47,14 @@ namespace ProjMongoDBAircraft.Controllers
         }
 
         [HttpGet]
+
+        [Authorize(Roles = "GetAircraft")]
         public ActionResult<List<Aircraft>> Get() =>
             _aircraftService.Get();
 
         [HttpGet("Search")]
+       
+        [Authorize(Roles = "SearchAircraft")]
         public ActionResult<Aircraft> GetAircraftCode(string code)
         {
             var aircraft = _aircraftService.GetAircraftCode(code);
@@ -36,6 +67,8 @@ namespace ProjMongoDBAircraft.Controllers
         }
 
         [HttpGet("{id:length(24)}", Name = "GetAircraft")]
+        
+        [Authorize(Roles = "GetAircraftId")]
         public ActionResult<Aircraft> Get(string id)
         {
             var aircraft = _aircraftService.Get(id);
@@ -49,6 +82,8 @@ namespace ProjMongoDBAircraft.Controllers
         }
 
         [HttpPost]
+      
+        [Authorize(Roles = "CreateAircraft")]
         public async Task<ActionResult<Aircraft>> Create(Aircraft aircraft)
         {
             
@@ -80,6 +115,8 @@ namespace ProjMongoDBAircraft.Controllers
         }
 
         [HttpPut("{id:length(24)}")]
+      
+        [Authorize(Roles = "UpdateAircraft")]
         public IActionResult Update(string id, Aircraft aircraftIn)
         {
             var aircraft = _aircraftService.Get(id);
@@ -99,6 +136,8 @@ namespace ProjMongoDBAircraft.Controllers
         }
 
         [HttpDelete("{id:length(24)}")]
+        
+        [Authorize(Roles = "DeleteAircraft")]
         public IActionResult Delete(string id)
         {
             var aircraft = _aircraftService.Get(id);

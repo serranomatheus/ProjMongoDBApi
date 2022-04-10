@@ -31,9 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjMongoDBUser", "ProjMong
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjMongoDBLog", "ProjMongoDBLog\ProjMongoDBLog.csproj", "{FBD84523-9503-456E-9A55-FC615CBE4826}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjMVCAirportData", "ProjMVCAirportData\ProjMVCAirportData.csproj", "{81AAC050-EDFD-493F-AEF3-3F84C5829807}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjMVCAirportData", "ProjMVCAirportData\ProjMVCAirportData.csproj", "{81AAC050-EDFD-493F-AEF3-3F84C5829807}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjMVCMongoAirport", "ProjMVCMongoAirport\ProjMVCMongoAirport.csproj", "{A2980D36-8879-4746-BA40-9F5F2CF0EC54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjMVCMongoAirport", "ProjMVCMongoAirport\ProjMVCMongoAirport.csproj", "{A2980D36-8879-4746-BA40-9F5F2CF0EC54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

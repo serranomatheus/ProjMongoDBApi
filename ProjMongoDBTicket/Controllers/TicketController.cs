@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -15,6 +16,32 @@ namespace ProjMongoDBTicket.Controllers
     [ApiController]
     public class TicketController : ControllerBase
     {
+        [HttpPost]
+        [Route("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
+        {
+            // Recupera o usuário
+            var user = await GetUser.GetLogin(model.Login, model.PassWord);
+
+            // Verifica se o usuário existe
+            if (user == null)
+                return NotFound(new { message = "Usuário ou senha inválidos" });
+
+            // Gera o Token
+            var token = TokenService.GenerateToken(user);
+
+            // Oculta a senha
+            user.PassWord = "";
+
+            // Retorna os dados
+            return new
+            {
+                user = user,
+                token = token
+            };
+        }
+
         private readonly TicketService _ticketService;
         public TicketController(TicketService ticketService)
         {
@@ -22,11 +49,13 @@ namespace ProjMongoDBTicket.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "GetTicket")]
         public ActionResult<List<Ticket>> Get() =>
             _ticketService.Get();
 
 
         [HttpGet("{id:length(24)}", Name = "GetTicket")]
+        [Authorize(Roles = "GetTicketId")]
         public ActionResult<Ticket> Get(string id)
         {
             var ticket = _ticketService.Get(id);
@@ -40,6 +69,7 @@ namespace ProjMongoDBTicket.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "CreateTicket")]
         public async Task<ActionResult<Ticket>> Create(Ticket ticket)
         {
             try
@@ -109,6 +139,7 @@ namespace ProjMongoDBTicket.Controllers
         }
 
         [HttpPut("{id:length(24)}")]
+        [Authorize(Roles = "UpdateTicket")]
         public IActionResult Update(string id, Ticket ticketIn)
         {
             var ticket = _ticketService.Get(id);
@@ -128,6 +159,7 @@ namespace ProjMongoDBTicket.Controllers
         }
 
         [HttpDelete("{id:length(24)}")]
+        [Authorize(Roles = "DeleteTicket")]
         public IActionResult Delete(string id)
         {
             var ticket = _ticketService.Get(id);
