@@ -83,8 +83,15 @@ namespace ProjMongoDBAirport.Controllers
         public async Task<ActionResult<Airport>> Create(Airport airport)
         {
             var addressApi = await Models.GetAddressApiPostalCodecs.GetAddress(airport.Address.PostalCode);
-            airport.Address = new Address(addressApi.Street, addressApi.City, addressApi.FederativeUnit, addressApi.District, airport.Address.Number, airport.Address.Complement,addressApi.PostalCode) ;
-
+            var airportData = await GetAiportData.GetAirport(airport.CodeIata);
+            if (airportData != null)
+            {
+                airport.Address = new Address(addressApi.Street, addressApi.City, addressApi.FederativeUnit, addressApi.District, airport.Address.Number, airport.Address.Complement, addressApi.PostalCode, airportData.Continent, airportData.Country);
+            }
+            else
+            {
+                airport.Address = new Address(addressApi.Street, addressApi.City, addressApi.FederativeUnit, addressApi.District, airport.Address.Number, airport.Address.Complement, addressApi.PostalCode);
+            }
 
 
             var responseGetLogin = await GetLoginUser.GetLogin(airport);

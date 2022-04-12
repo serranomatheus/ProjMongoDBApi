@@ -19,14 +19,12 @@ namespace ProjDapperApiAirport.Controllers
         }
 
         [HttpGet]
-        [Route("user")]
-        [Authorize(Roles = "user,adm")]
+        
         public ActionResult<List<AirportData>> Get() =>
             _airportService.GetAll();
 
         [HttpPost]
-        [Route("adm")]
-        [Authorize(Roles = "adm")]
+        
         public ActionResult<AirportData> Create(AirportData aiportData)
         {
             _airportService.Add(aiportData);
@@ -34,8 +32,7 @@ namespace ProjDapperApiAirport.Controllers
         }
 
         [HttpDelete]
-        [Route("adm")]
-        [Authorize(Roles = "adm")]
+        
         public IActionResult Delete(string id)
         {
             var airportData = _airportService.Get(id);
@@ -48,8 +45,7 @@ namespace ProjDapperApiAirport.Controllers
         }
         
         [HttpPut]
-        [Route("adm")]
-        [Authorize(Roles = "adm")]
+        
         public IActionResult Update(string id, AirportData airportDataIn)
         {
             var airportData = _airportService.Get(id);
@@ -62,11 +58,15 @@ namespace ProjDapperApiAirport.Controllers
             return NoContent();
         }
         
+        [HttpGet("Code")]
+        public ActionResult<AirportData> GetCode(string code) =>
+        
+            _airportService.GetCode(code);
+        
         
    
         [HttpGet("Search")]
-        [Route("adm")]
-        [Authorize(Roles = "adm")]
+       
         public ActionResult<AirportData> Get(string id) =>
             _airportService.Get(id);
 

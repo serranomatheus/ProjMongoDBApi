@@ -12,5 +12,7 @@ namespace ProjDapperApiAirport.Repositories
         AirportData Get(string id);
 
         void Update(AirportData airport);
+
+        AirportData GetCode(string code);
     }
 }

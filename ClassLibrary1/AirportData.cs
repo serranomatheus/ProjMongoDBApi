@@ -15,6 +15,7 @@ namespace Models
         public readonly static string GETALL = "SELECT Id,City,Country,Code,Continent FROM Airport";
         public readonly static string DELETE = "DELETE FROM Airport WHERE Id = ";
         public readonly static string GET = "SELECT Id,City,Country,Code,Continent FROM Airport WHERE ID = ";
+        public readonly static string GETCODE = "SELECT Id,City,Country,Code,Continent FROM Airport WHERE Code = '@code'";
         public readonly static string UPDATE = "UPDATE Airport SET City = @City,Country = @Country,Code = @Code,Continent = @Continent WHERE Id = @Id";
         #endregion
 

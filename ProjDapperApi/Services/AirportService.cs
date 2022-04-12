@@ -37,5 +37,10 @@ namespace ProjDapperApiAirport.Services
             _airportRepository.Update(airportData);
         }
 
+        public AirportData GetCode(string code)
+        {
+            return _airportRepository.GetCode(code);
+        }
+
     }
 }

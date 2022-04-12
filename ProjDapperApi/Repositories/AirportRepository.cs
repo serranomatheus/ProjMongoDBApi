@@ -47,6 +47,16 @@ namespace ProjDapperApiAirport.Repositories
             }
         }
 
+        public AirportData GetCode(string code)
+        {
+            using (var db = new SqlConnection(_connection))
+            {
+                db.Open();
+                var airportData = db.QueryFirstOrDefault<AirportData>(AirportData.GETCODE , code);
+                return (AirportData)airportData;
+            }
+        }
+
         public void Remove(string id)
         {
             using (var db = new SqlConnection(_connection))
