@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Newtonsoft.Json;
 using ProjMongoDBLog.Services;
+using RabbitMQ.Client;
 
 namespace ProjMongoDBLog.Controllers
 {
@@ -39,9 +42,17 @@ namespace ProjMongoDBLog.Controllers
         }
 
         private readonly LogService _logService;
+        private readonly ConnectionFactory _factory;
+        private const string QUEUE_NAME = "messagelogs";
+
+        
         public LogController(LogService logService)
         {
             _logService = logService;
+            _factory = new ConnectionFactory
+            {
+                HostName = "localhost"
+            };
         }
 
         [HttpGet]
@@ -65,14 +76,36 @@ namespace ProjMongoDBLog.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "CreateLog")]
-        public ActionResult<Log> Create(Log log)
-        {
-            _logService.Create(log);
-            return CreatedAtRoute("GetLog", new { id = log.Id.ToString() }, log);
-
-        }
         
+        public IActionResult PostMessage([FromBody] Log message)
+        {
+            using (var connection = _factory.CreateConnection())
+            {
+                using (var channel = connection.CreateModel())
+                {
+
+                    channel.QueueDeclare(
+                        queue: QUEUE_NAME,
+                        durable: false,
+                        exclusive: false,
+                        autoDelete: false,
+                        arguments: null
+                        );
+
+                    var stringfieldMessage = JsonConvert.SerializeObject(message);
+                    var bytesMessage = Encoding.UTF8.GetBytes(stringfieldMessage);
+
+                    channel.BasicPublish(
+                        exchange: "",
+                        routingKey: QUEUE_NAME,
+                        basicProperties: null,
+                        body: bytesMessage
+                        );
+                }
+            }
+            return Accepted();
+        }
+
 
         [HttpPut("{id:length(24)}")]
         [Authorize(Roles = "UpdateLog")]

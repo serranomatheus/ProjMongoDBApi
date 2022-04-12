@@ -65,7 +65,7 @@ namespace ProjMongoDBUser.Controllers
 
 
         [HttpGet("GetLogin")]
-        [Authorize(Roles = "GetUserLogin")]
+        
         public ActionResult<User> GetLogin(string loginUser)
         {
             var user = _userService.GetLogin(loginUser);

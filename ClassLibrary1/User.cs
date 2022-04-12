@@ -14,5 +14,8 @@ namespace Models
         public string Sector { get; set; }
         public Role Role { get; set; }
         #endregion
+
     }
+
+   
 }
