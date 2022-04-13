@@ -15,11 +15,13 @@ namespace ProjTestRabbit
 
             Log log = new Log("dasdas", "dasdas", "dasdasd", "dasdsa");
 
-            for (int i = 1; i <= 10; i++)
+            for (int i = 1; i <= 500; i++)
             {
-                ApiConnection.PostAsJsonAsync("https://localhost:44395/api/Log", log);
-            }           
+                Console.WriteLine(i);
+                Class1.Add(log).Wait();
+            }
 
+            
         }
     }
 }
