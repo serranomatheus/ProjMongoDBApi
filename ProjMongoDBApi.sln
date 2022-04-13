@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjRabbitMQLog", "ProjRabb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjRabbitMQLogApiToMongo", "ProjRabbitMQLogApiProducer\ProjRabbitMQLogApiToMongo.csproj", "{5974E2F5-75B6-4501-9710-21C0F63353DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjTestRabbit", "ProjTestRabbit\ProjTestRabbit.csproj", "{9F53B5AF-C488-449F-BB86-53F1FB4BD9D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,10 @@ Global
 		{5974E2F5-75B6-4501-9710-21C0F63353DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5974E2F5-75B6-4501-9710-21C0F63353DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5974E2F5-75B6-4501-9710-21C0F63353DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F53B5AF-C488-449F-BB86-53F1FB4BD9D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F53B5AF-C488-449F-BB86-53F1FB4BD9D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F53B5AF-C488-449F-BB86-53F1FB4BD9D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F53B5AF-C488-449F-BB86-53F1FB4BD9D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Models;
+using Newtonsoft.Json;
 using ProjMVCMongoAirport.Data;
 using ProjMVCMongoAirport.Models;
 
@@ -18,12 +22,17 @@ namespace ProjMVCMongoAirport.Controllers
         {
             _context = context;
         }
+        
 
         // GET: Airports
         public async Task<IActionResult> Index()
         {
-            //abrir conexao get airport return o get
-            return View(await _context.Airport.ToListAsync());
+            HttpClient ApiConnection = new HttpClient();
+            HttpResponseMessage airportdata = await ApiConnection.GetAsync("https://localhost:44340/api/Airports");
+            string responseBody = await airportdata.Content.ReadAsStringAsync();
+             IEnumerable<AirportData> airportsData =  JsonConvert.DeserializeObject<List<AirportData>>(responseBody);
+
+            return View(airportsData);
         }
 
         // GET: Airports/Details/5

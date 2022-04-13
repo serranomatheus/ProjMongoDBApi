@@ -24,4 +24,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ProjMongoDBTicket\ProjMongoDBTicket.csproj" />
+  </ItemGroup>
+
 </Project>
